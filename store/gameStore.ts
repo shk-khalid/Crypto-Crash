@@ -45,31 +45,25 @@ export interface GameFeedItem {
 }
 
 interface GameState {
-  // Player data
   player: Player | null;
   wallet: Wallet | null;
-  
-  // Game state
+
   currentRound: Round | null;
   currentBet: Bet | null;
   roundHistory: Round[];
   gameFeed: GameFeedItem[];
-  
-  // Socket
+
   socket: Socket | null;
   connected: boolean;
-  
-  // UI state
+
   isLoading: boolean;
   error: string | null;
-  
-  // Countdown timer
+
   timeLeft: number;
-  
-  // Actions
+
   setPlayer: (player: Player) => void;
   setWallet: (wallet: Wallet) => void;
-  setSocket: (socket: Socket) => void;
+  setSocket: (socket: Socket | null) => void; // 🔥 Fix is here
   setConnected: (connected: boolean) => void;
   setCurrentRound: (round: Round) => void;
   setCurrentBet: (bet: Bet | null) => void;
@@ -85,7 +79,6 @@ interface GameState {
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
-      // Initial state
       player: null,
       wallet: null,
       currentRound: null,
@@ -97,49 +90,49 @@ export const useGameStore = create<GameState>()(
       isLoading: false,
       error: null,
       timeLeft: 0,
-      
-      // Actions
+
       setPlayer: (player) => set({ player }),
       setWallet: (wallet) => set({ wallet }),
-      setSocket: (socket) => set({ socket }),
+      setSocket: (socket) => set({ socket }), // 🔥 Fix here too
       setConnected: (connected) => set({ connected }),
       setCurrentRound: (round) => set({ currentRound: round }),
       setCurrentBet: (bet) => set({ currentBet: bet }),
-      
+
       updateMultiplier: (multiplier) => {
         const currentRound = get().currentRound;
         if (currentRound) {
           set({
-            currentRound: { ...currentRound, multiplier }
+            currentRound: { ...currentRound, multiplier },
           });
         }
       },
-      
+
       addToHistory: (round) => {
         set((state) => ({
-          roundHistory: [round, ...state.roundHistory.slice(0, 19)]
+          roundHistory: [round, ...state.roundHistory.slice(0, 19)],
         }));
       },
-      
+
       addToFeed: (item) => {
         set((state) => ({
-          gameFeed: [item, ...state.gameFeed.slice(0, 49)]
+          gameFeed: [item, ...state.gameFeed.slice(0, 49)],
         }));
       },
-      
+
       setLoading: (loading) => set({ isLoading: loading }),
       setError: (error) => set({ error }),
       setTimeLeft: (time) => set({ timeLeft: time }),
-      
-      clearGameData: () => set({
-        currentRound: null,
-        currentBet: null,
-        roundHistory: [],
-        gameFeed: [],
-        socket: null,
-        connected: false,
-        timeLeft: 0,
-      }),
+
+      clearGameData: () =>
+        set({
+          currentRound: null,
+          currentBet: null,
+          roundHistory: [],
+          gameFeed: [],
+          socket: null,
+          connected: false,
+          timeLeft: 0,
+        }),
     }),
     {
       name: 'crypto-crash-game',

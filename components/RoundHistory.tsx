@@ -35,14 +35,21 @@ export default function RoundHistory() {
     return 'text-purple-400';
   };
 
-  const getCrashVariant = (crashPoint: number): "default" | "secondary" | "destructive" | "outline" => {
+  const getCrashVariant = (
+    crashPoint: number
+  ): 'default' | 'secondary' | 'destructive' | 'outline' => {
     if (crashPoint < 1.5) return 'destructive';
     if (crashPoint < 3) return 'secondary';
     if (crashPoint < 10) return 'default';
     return 'outline';
   };
+
   const getCrashIcon = (crashPoint: number) => {
-    return crashPoint > 2 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />;
+    return crashPoint > 2 ? (
+      <TrendingUp className="w-3 h-3" />
+    ) : (
+      <TrendingDown className="w-3 h-3" />
+    );
   };
 
   return (
@@ -61,33 +68,40 @@ export default function RoundHistory() {
         ) : (
           <ScrollArea className="h-96">
             <div className="space-y-2 pr-4">
-            {roundHistory.map((round) => (
-              <div
-                key={round.id}
-                className="flex items-center justify-between p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
-              >
-                <div className="flex items-center space-x-3">
-  <Badge variant="outline" className="text-slate-300 border-slate-500">
-    {round.id.slice(0, 6)}...
-  </Badge>
-  <Badge variant={getCrashVariant(round.crashPoint)} className="font-mono">
-    {round.crashPoint.toFixed(2)}x
-  </Badge>
-  <span className="text-slate-300">
-    {round.bets.length} bet{round.bets.length !== 1 ? 's' : ''}
-  </span>
-</div>
+              {roundHistory.map((round) => (
+                <div
+                  key={round.id}
+                  className="flex items-center justify-between p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Badge variant="outline" className="text-slate-300 border-slate-500">
+                      {round.id.slice(0, 6)}...
+                    </Badge>
 
-                
-                {round.crashPoint && (
-                  <div className={`flex items-center space-x-1 font-bold ${getCrashColor(round.crashPoint)}`}>
-                    {getCrashIcon(round.crashPoint)}
-                    <span className="font-mono">{round.crashPoint.toFixed(2)}x</span>
+                    {typeof round.crashPoint === 'number' && (
+                      <Badge variant={getCrashVariant(round.crashPoint)} className="font-mono">
+                        {round.crashPoint.toFixed(2)}x
+                      </Badge>
+                    )}
+
+                    <span className="text-slate-300">
+                      {round.bets.length} bet{round.bets.length !== 1 ? 's' : ''}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+
+                  {typeof round.crashPoint === 'number' && (
+                    <div
+                      className={`flex items-center space-x-1 font-bold ${getCrashColor(
+                        round.crashPoint
+                      )}`}
+                    >
+                      {getCrashIcon(round.crashPoint)}
+                      <span className="font-mono">{round.crashPoint.toFixed(2)}x</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </ScrollArea>
         )}
       </CardContent>
